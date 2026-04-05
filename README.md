@@ -1,3 +1,4 @@
 # MLOps Lab 1
 
-Repository for Laboratory 1 - production-ready machine learning application.
+## Homework
+This repository contains the homework version based on the Lab 1 project.
