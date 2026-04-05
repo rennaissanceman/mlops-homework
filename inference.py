@@ -3,7 +3,6 @@ from __future__ import annotations
 import zipfile
 from pathlib import Path
 
-import gdown
 import joblib
 from sentence_transformers import SentenceTransformer
 
@@ -36,6 +35,13 @@ class SentimentInferenceService:
             return
 
         self.models_root.mkdir(parents=True, exist_ok=True)
+
+        try:
+            import gdown
+        except ImportError as exc:
+            raise RuntimeError(
+                "Missing optional dependency 'gdown'. Install it with: uv add gdown"
+            ) from exc
 
         gdown.download(
             url=MODEL_ARCHIVE_URL,
@@ -71,3 +77,6 @@ class SentimentInferenceService:
         embedding = self.encoder.encode([cleaned_text], convert_to_numpy=True)
         predicted_class = self.classifier.predict(embedding)[0]
         return CLASS_MAPPING[int(predicted_class)]
+
+
+SentimentModelService = SentimentInferenceService
