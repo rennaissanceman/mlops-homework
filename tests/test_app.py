@@ -2,38 +2,46 @@ from fastapi.testclient import TestClient
 
 from app import app
 
-
 client = TestClient(app)
 
 
-def test_root_returns_welcome_message():
-    response = client.get("/")
-
-    assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to the ML API"}
-
-
-def test_health_returns_ok_status():
+def test_health_returns_ok() -> None:
     response = client.get("/health")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
 
-def test_predict_returns_valid_class_name():
-    response = client.post(
-        "/predict",
-        json={
-            "sepal_length": 5.1,
-            "sepal_width": 3.5,
-            "petal_length": 1.4,
-            "petal_width": 0.2,
-        },
-    )
+def test_predict_returns_positive_for_valid_text() -> None:
+    response = client.post("/predict", json={"text": "This lecture was great"})
 
     assert response.status_code == 200
+    assert response.json() == {"prediction": "positive"}
 
-    data = response.json()
-    assert "prediction" in data
-    assert isinstance(data["prediction"], str)
-    assert data["prediction"] in {"setosa", "versicolor", "virginica"}
+
+def test_predict_rejects_empty_text() -> None:
+    response = client.post("/predict", json={"text": ""})
+
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+
+def test_predict_rejects_whitespace_only_text() -> None:
+    response = client.post("/predict", json={"text": "   "})
+
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+
+def test_predict_rejects_missing_text_field() -> None:
+    response = client.post("/predict", json={})
+
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+
+def test_predict_rejects_non_string_text() -> None:
+    response = client.post("/predict", json={"text": 123})
+
+    assert response.status_code == 422
+    assert "detail" in response.json()

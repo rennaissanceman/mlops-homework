@@ -1,26 +1,16 @@
-# app.py
 from fastapi import FastAPI
 
-from api.models.iris import PredictRequest, PredictResponse
-from inference import load_model
+from api.models.sentiment import PredictRequest, PredictResponse
 
-
-app = FastAPI()
-
-model = load_model()
-
-
-@app.get("/")
-def welcome_root():
-    return {"message": "Welcome to the ML API"}
+app = FastAPI(title="Sentiment Analysis API")
 
 
 @app.get("/health")
-def health_check():
+def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
-    prediction = model.predict(request.model_dump())
-    return PredictResponse(prediction=prediction)
+    _ = request
+    return PredictResponse(prediction="positive")
