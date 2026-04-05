@@ -3,7 +3,7 @@ from __future__ import annotations
 import zipfile
 from pathlib import Path
 
-import joblib
+import joblib  # type: ignore[import-untyped]
 from sentence_transformers import SentenceTransformer
 
 CLASS_MAPPING = {
@@ -37,7 +37,7 @@ class SentimentInferenceService:
         self.models_root.mkdir(parents=True, exist_ok=True)
 
         try:
-            import gdown
+            import gdown  # type: ignore[import-untyped]
         except ImportError as exc:
             raise RuntimeError(
                 "Missing optional dependency 'gdown'. Install it with: uv add gdown"

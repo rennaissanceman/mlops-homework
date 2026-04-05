@@ -4,8 +4,7 @@ from api.models.sentiment import PredictRequest, PredictResponse
 from inference import SentimentInferenceService
 
 app = FastAPI()
-
-sentiment_service = SentimentInferenceService()
+inference_service = SentimentInferenceService()
 
 
 @app.get("/health")
@@ -15,5 +14,5 @@ def health() -> dict[str, str]:
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
-    prediction = sentiment_service.predict(request.text)
+    prediction = inference_service.predict(request.text)
     return PredictResponse(prediction=prediction)

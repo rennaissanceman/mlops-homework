@@ -8,7 +8,7 @@ class PredictRequest(BaseModel):
     @classmethod
     def validate_text(cls, value: str) -> str:
         if not value or not value.strip():
-            raise ValueError("text must be a non-empty string")
+            raise ValueError("Text must be a non-empty string.")
         return value
 
 
