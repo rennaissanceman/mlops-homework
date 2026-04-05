@@ -1,16 +1,14 @@
 from fastapi import FastAPI
 
 from api.models.sentiment import PredictRequest, PredictResponse
+from inference import SentimentInferenceService
 
-app = FastAPI(title="Sentiment Analysis API")
+app = FastAPI()
 
-
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+sentiment_service = SentimentInferenceService()
 
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
-    _ = request
-    return PredictResponse(prediction="positive")
+    prediction = sentiment_service.predict(request.text)
+    return PredictResponse(prediction=prediction)

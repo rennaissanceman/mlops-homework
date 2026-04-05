@@ -7,7 +7,7 @@ class PredictRequest(BaseModel):
     @field_validator("text")
     @classmethod
     def validate_text(cls, value: str) -> str:
-        if not value.strip():
+        if not value or not value.strip():
             raise ValueError("text must be a non-empty string")
         return value
 
