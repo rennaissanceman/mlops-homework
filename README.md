@@ -1,108 +1,114 @@
-# MLOps Lab 1 — Sentiment Analysis API - Homework
+# MLOps Homework – Sentiment Analysis API
 
-## 📌 Overview
+## Overview
 
-This project is a **production-ready FastAPI application** for sentiment analysis.
+This project implements a production-ready sentiment analysis service using FastAPI.
+The application performs inference using a pre-trained Sentence Transformer model and a logistic regression classifier.
 
-It exposes a REST API that classifies text into:
+The system follows basic MLOps principles:
 
-* `negative`
-* `neutral`
-* `positive`
-
-The model is automatically downloaded on first run and cached locally.
-
----
-
-## ⚙️ Requirements
-
-* Python **3.12+**
-* [uv](https://www.google.com/search?q=uv+python+package+manager+installation)
-* Docker (optional)
+* separation of code and model artifacts,
+* automated model download,
+* containerized deployment,
+* automated testing.
 
 ---
 
-## 🚀 Run locally (recommended)
+## Features
 
-### 1. Install dependencies
+* FastAPI web server
+* `/predict` endpoint for sentiment analysis
+* Input validation using Pydantic
+* Automatic model download from Google Drive
+* Unit tests using pytest
+* Containerization with Docker and Docker Compose
 
-```bash
+---
+
+## Project Structure
+
+```
+.
+├── app.py
+├── inference.py
+├── api/
+├── tests/
+├── Dockerfile
+├── docker-compose.yaml
+├── pyproject.toml
+├── uv.lock
+└── README.md
+```
+
+---
+
+## Model Handling
+
+The model is not included in the repository due to size limitations.
+
+On application startup:
+
+1. The model archive is downloaded from Google Drive
+2. The archive is extracted into the `models/` directory
+3. The transformer and classifier are loaded into memory
+
+This ensures:
+
+* repository size remains below submission limits,
+* reproducibility,
+* clean separation of code and artifacts.
+
+---
+
+## Running Locally
+
+### Install dependencies
+
+```
 uv sync
 ```
 
-### 2. Run application
+### Start the server
 
-```bash
+```
 uv run uvicorn app:app --reload
 ```
 
-### 3. Open API
+### Test the API
 
-* Swagger UI: http://localhost:8000/docs
-* Health check:
-
-```bash
-curl http://localhost:8000/health
+```
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://127.0.0.1:8000/predict" `
+  -ContentType "application/json" `
+  -Body '{"text":"I love this product"}'
 ```
 
 ---
 
-## 🐳 Run with Docker
-
-### Build and run
-
-```bash
-docker compose up --build
-```
-
-### Open API
-
-* http://localhost:8000/docs
-
----
-
-## 🧠 Model
-
-On first run, the application:
-
-1. Downloads the model archive from Google Drive
-2. Extracts it into the `models/` directory
-3. Loads:
-
-   * Sentence Transformer encoder
-   * Classification model (`joblib`)
-
-Internet is required only for the first run.
-
----
-
-## 📡 API
+## API Endpoints
 
 ### Health check
 
-```http
+```
 GET /health
 ```
 
 Response:
 
-```json
-{
-  "status": "ok"
-}
+```
+{"status": "ok"}
 ```
 
----
+### Prediction
 
-### Predict sentiment
-
-```http
+```
 POST /predict
 ```
 
 Request:
 
-```json
+```
 {
   "text": "I love this product"
 }
@@ -110,78 +116,77 @@ Request:
 
 Response:
 
-```json
+```
 {
   "prediction": "positive"
 }
 ```
 
+Possible outputs:
+
+* negative
+* neutral
+* positive
+
 ---
 
-## 🧪 Tests
+## Testing
 
 Run all tests:
 
-```bash
-uv run pytest tests -vv
+```
+uv run pytest -v
 ```
 
-Covers:
+Tests cover:
 
-* input validation
-* API responses
-* model loading
-* inference correctness
+* input validation,
+* model loading,
+* inference correctness,
+* API responses.
 
 ---
 
-## 🧹 Code quality
+## Docker
 
-Pre-commit hooks:
-
-```bash
-uv run pre-commit install
-uv run pre-commit run --all-files
-```
-
-Includes:
-
-* Ruff (lint + format)
-* mypy (type checking)
-
----
-
-## 📁 Project structure
+### Build and run
 
 ```
-.
-├── app.py
-├── inference.py
-├── api/
-│   └── models/
-├── tests/
-├── models/
-├── pyproject.toml
-├── docker-compose.yaml
-├── Dockerfile
+docker compose up --build
+```
+
+### Access API
+
+```
+http://localhost:8000
+```
+
+Swagger UI:
+
+```
+http://localhost:8000/docs
 ```
 
 ---
 
-## ✅ Features
+## Notes
 
-* FastAPI REST API
-* Automatic model download
-* Input validation (Pydantic)
-* Unit & integration tests (pytest)
-* Static typing (mypy)
-* Code linting (ruff)
-* Containerized with Docker
+* The model is downloaded at runtime, so the container requires internet access on first run.
+* The `models/` directory and model artifacts are excluded from version control and Docker build context.
 
 ---
 
-## 📌 Notes
+## Submission
 
-* The model is stored locally after first run
-* No GPU is required (CPU version of PyTorch is used)
-* Designed for reproducibility using `uv`
+The repository or archive should include:
+
+* source code,
+* Docker configuration,
+* tests,
+* dependency files.
+
+Do not include:
+
+* `.venv/`
+* `models/`
+* large model files or archives
