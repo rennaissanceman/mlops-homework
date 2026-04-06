@@ -1,3 +1,4 @@
+@'
 .venv/
 __pycache__/
 .pytest_cache/
@@ -14,3 +15,7 @@ dist/
 build/
 htmlcov/
 .coverage
+models/
+*.joblib
+*.zip
+'@ | Set-Content .dockerignore
