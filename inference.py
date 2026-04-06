@@ -25,18 +25,13 @@ class SentimentInferenceService:
         self.classifier = joblib.load(self.classifier_path)
 
     def _validate_model_files(self) -> None:
-        if not self.models_root.exists():
-            raise FileNotFoundError(f"Models directory not found: {self.models_root}")
-
         if not self.encoder_dir.exists():
-            raise FileNotFoundError(
-                f"SentenceTransformer directory not found: {self.encoder_dir}"
-            )
+            msg = f"Sentence Transformer directory not found: {self.encoder_dir}"
+            raise FileNotFoundError(msg)
 
         if not self.classifier_path.exists():
-            raise FileNotFoundError(
-                f"Classifier file not found: {self.classifier_path}"
-            )
+            msg = f"Classifier file not found: {self.classifier_path}"
+            raise FileNotFoundError(msg)
 
     def predict(self, text: str) -> str:
         embedding = self.encoder.encode([text])
