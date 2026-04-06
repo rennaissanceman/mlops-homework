@@ -206,3 +206,8 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 .idea/
+
+models/
+*.joblib
+sentiment_model.zip
+.venv/
